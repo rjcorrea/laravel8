@@ -26,7 +26,14 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'description' => 'nullable',
+            'status' => 'required:boolean'
+        ]);
+
+        $todo = Todo::create($validatedData);
+        return response($todo, 201);
     }
 
     /**
@@ -37,7 +44,8 @@ class TodoController extends Controller
      */
     public function show($id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+        return $todo;
     }
 
     /**
@@ -49,7 +57,16 @@ class TodoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'description' => 'nullable',
+            'status' => 'required:boolean'
+        ]);
+
+        $todo = Todo::findOrFail($id);
+        $todo->update($validatedData);
+
+        return $todo;
     }
 
     /**
@@ -60,6 +77,12 @@ class TodoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+        $isDeleted = $todo->delete();
+        if ($isDeleted) {
+            return response()->json(['status' => 'success'], 200);
+        } else {
+            return response()->json(['status' => 'error'], 400);
+        }
     }
 }
