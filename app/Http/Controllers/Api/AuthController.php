@@ -20,8 +20,7 @@ class AuthController extends Controller
         $validatedData['password'] = bcrypt($request->password);
 
         $user = User::create($validatedData);
-        $accessToken = $user->createToken('authToken')->accessToken;
-        return response(['user' => $user, 'access_token' => $accessToken]);
+        return response(['user' => $user]);
     }
 
     public function login(Request $request)
@@ -37,7 +36,7 @@ class AuthController extends Controller
 
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
-        return response(['user' => auth('api')->user(), 'access_token' => $accessToken]);
+        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
     }
 
     public function user()
