@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TodoRequest;
 use App\Todo;
 
 class TodoController extends Controller
@@ -15,7 +15,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        return Todo::paginate(10);
+        return Todo::orderBy('id', 'desc')->paginate(10);
     }
 
     /**
@@ -24,13 +24,9 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TodoRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'description' => 'nullable',
-            'status' => 'required:boolean'
-        ]);
+        $validatedData = $request->validated();
 
         $todo = Todo::create($validatedData);
         return response($todo, 201);
@@ -55,13 +51,9 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TodoRequest $request, $id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'description' => 'nullable',
-            'status' => 'required:boolean'
-        ]);
+        $validatedData = $request->validated();
 
         $todo = Todo::findOrFail($id);
         $todo->update($validatedData);
