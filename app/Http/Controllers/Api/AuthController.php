@@ -3,40 +3,35 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\AuthRequest;
+use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\User;
 
 class AuthController extends Controller
 {
 
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:55',
-            'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed'
-        ]);
+        $validatedData = $request->validated();
 
         $validatedData['password'] = bcrypt($request->password);
 
         $user = User::create($validatedData);
-        return response(['user' => $user]);
+        return response(['status' => 'Success', 'user' => $user], 201);
     }
 
-    public function login(Request $request)
+    public function login(AuthRequest $request)
     {
-        $loginData = $request->validate([
-            'email' => 'email|required',
-            'password' => 'required'
-        ]);
+        $validatedData = $request->validated();
 
-        if (!auth()->attempt($loginData)) {
-            return response(['message' => 'Invalid credentials']);
+        if (!auth()->attempt($validatedData)) {
+            return response(['status' => 'Unauthorized', 'message' => 'Invalid credentials'], 401);
         }
 
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
-        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+        return response(['user' => auth()->user(), 'access_token' => $accessToken], 200);
     }
 
     public function user()
@@ -49,7 +44,8 @@ class AuthController extends Controller
         $request->user()->token()->revoke();
         $request->user()->token()->delete();
         return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+            'status' => 'Success',
+            'message' => 'You have successfully logged out.'
+        ], 200);
     }
 }
