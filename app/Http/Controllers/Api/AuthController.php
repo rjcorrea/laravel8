@@ -30,7 +30,6 @@ class AuthController extends Controller
         }
 
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
-
         return response(['user' => auth()->user(), 'access_token' => $accessToken], 200);
     }
 
@@ -39,10 +38,10 @@ class AuthController extends Controller
         return response(['user' => auth('api')->user()]);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $request->user()->token()->revoke();
-        $request->user()->token()->delete();
+        auth()->user()->token()->revoke();
+        auth()->user()->token()->delete();
         return response()->json([
             'status' => 'Success',
             'message' => 'You have successfully logged out.'
