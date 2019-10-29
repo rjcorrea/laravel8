@@ -29,7 +29,7 @@ class AuthController extends Controller
         }
 
         $accessToken = auth()->user()->createToken('authToken')->accessToken;
-        return response(['user' => auth()->user(), 'access_token' => $accessToken], 200);
+        return response(['user' => auth()->user(), 'auth' => ['access_token'=> $accessToken]], 200);
     }
 
     public function user()
