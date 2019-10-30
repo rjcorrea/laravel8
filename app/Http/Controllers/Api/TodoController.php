@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TodoRequest;
 use App\Todo;
@@ -13,9 +14,9 @@ class TodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Todo::orderBy('id', 'desc')->paginate(10);
+        return Todo::orderBy($request->query('sortBy'), $request->query('sortDesc'))->paginate(10);
     }
 
     /**
