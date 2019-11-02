@@ -10,12 +10,12 @@ use App\Todo;
 class TodoController extends Controller
 {
     private $sortBy;
-    private $sortDesc;
+    private $sortDirection;
 
     public function __construct()
     {
         $this->sortBy = 'id';
-        $this->sortDesc = 'desc';
+        $this->sortDirection = 'desc';
     }
     /**
      * Display a listing of the resource.
@@ -24,12 +24,12 @@ class TodoController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('sortBy') && $request->has('sortDesc')){
+        if($request->has('sortBy') && $request->has('sortDirection')){
             $this->sortBy = $request->sortBy;
-            $this->sortDesc = $request->sortDesc;
+            $this->sortDirection = $request->sortDirection;
         }
         
-        $users = Todo::orderBy($this->sortBy, $this->sortDesc);
+        $users = Todo::orderBy($this->sortBy, $this->sortDirection);
 
         return $users->paginate(10);
     }
