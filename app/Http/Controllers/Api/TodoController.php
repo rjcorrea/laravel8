@@ -29,9 +29,9 @@ class TodoController extends Controller
             $this->sortDirection = $request->sortDirection;
         }
         
-        $users = Todo::orderBy($this->sortBy, $this->sortDirection);
+        $todos = Todo::orderBy($this->sortBy, $this->sortDirection);
 
-        return $users->paginate(10);
+        return $todos->paginate(10);
     }
 
     /**
@@ -92,5 +92,21 @@ class TodoController extends Controller
         } else {
             return response()->json(['status' => 'error'], 400);
         }
+    }
+
+    public function search(Request $request){
+
+        if($request->has('name')){
+            $todos = Todo::where('name', 'LIKE', "{$request->name}%");
+        }
+
+        if($request->has('sortBy') && $request->has('sortDirection')){
+            $this->sortBy = $request->sortBy;
+            $this->sortDirection = $request->sortDirection;
+        }
+        
+        $todos->orderBy($this->sortBy, $this->sortDirection);
+
+        return $todos->paginate(10);
     }
 }
