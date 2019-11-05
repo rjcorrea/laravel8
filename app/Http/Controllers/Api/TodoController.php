@@ -5,17 +5,15 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TodoRequest;
-use App\Todo;
+use App\Services\TodoService;
 
 class TodoController extends Controller
 {
-    private $sortBy;
-    private $sortDirection;
+    private $todoService;
 
-    public function __construct()
+    public function __construct(TodoService $service)
     {
-        $this->sortBy = 'id';
-        $this->sortDirection = 'desc';
+        $this->todoService = $service;
     }
     /**
      * Display a listing of the resource.
@@ -24,14 +22,7 @@ class TodoController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('sortBy') && $request->has('sortDirection')){
-            $this->sortBy = $request->sortBy;
-            $this->sortDirection = $request->sortDirection;
-        }
-        
-        $todos = Todo::orderBy($this->sortBy, $this->sortDirection);
-
-        return $todos->paginate(10);
+        return $this->todoService->all($request);
     }
 
     /**
@@ -42,10 +33,7 @@ class TodoController extends Controller
      */
     public function store(TodoRequest $request)
     {
-        $validatedData = $request->validated();
-
-        $todo = Todo::create($validatedData);
-        return response($todo, 201);
+        return $this->todoService->store($request);
     }
 
     /**
@@ -56,8 +44,7 @@ class TodoController extends Controller
      */
     public function show($id)
     {
-        $todo = Todo::findOrFail($id);
-        return $todo;
+        return $this->todoService->show($id);
     }
 
     /**
@@ -69,12 +56,7 @@ class TodoController extends Controller
      */
     public function update(TodoRequest $request, $id)
     {
-        $validatedData = $request->validated();
-
-        $todo = Todo::findOrFail($id);
-        $todo->update($validatedData);
-
-        return $todo;
+        return $this->todoService->update($request, $id);
     }
 
     /**
@@ -85,26 +67,22 @@ class TodoController extends Controller
      */
     public function destroy($id)
     {
-        $todo = Todo::findOrFail($id);
-        $isDeleted = $todo->delete();
-        if ($isDeleted) {
-            return response()->json(['status' => 'success'], 200);
-        } else {
-            return response()->json(['status' => 'error'], 400);
-        }
+        $this->todoService->destroy($id);
+        return response()->json(['status' => 'Success'], 200);
     }
 
-    public function search(Request $request){
+    public function search(Request $request)
+    {
 
-        if($request->has('name')){
+        if ($request->has('name')) {
             $todos = Todo::where('name', 'LIKE', "{$request->name}%");
         }
 
-        if($request->has('sortBy') && $request->has('sortDirection')){
+        if ($request->has('sortBy') && $request->has('sortDirection')) {
             $this->sortBy = $request->sortBy;
             $this->sortDirection = $request->sortDirection;
         }
-        
+
         $todos->orderBy($this->sortBy, $this->sortDirection);
 
         return $todos->paginate(10);
