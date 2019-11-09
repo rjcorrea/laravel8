@@ -70,21 +70,4 @@ class TodoController extends Controller
         $this->todoService->destroy($id);
         return response()->json(['status' => 'Success'], 200);
     }
-
-    public function search(Request $request)
-    {
-
-        if ($request->has('name')) {
-            $todos = Todo::where('name', 'LIKE', "{$request->name}%");
-        }
-
-        if ($request->has('sortBy') && $request->has('sortDirection')) {
-            $this->sortBy = $request->sortBy;
-            $this->sortDirection = $request->sortDirection;
-        }
-
-        $todos->orderBy($this->sortBy, $this->sortDirection);
-
-        return $todos->paginate(10);
-    }
 }

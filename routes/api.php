@@ -18,6 +18,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', 'Api\AuthController@logout');
 
     Route::apiResource('todos', 'Api\TodoController');
+    Route::post('/search/{model}', 'Api\SearchController@search');
 });
 
 Route::post('/register', 'Api\AuthController@register');
