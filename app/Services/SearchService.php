@@ -26,16 +26,16 @@ class SearchService
             $this->sortDirection = $request->sortDirection;
         }
 
+        $search = $namespacedModel::orderBy($this->sortBy, $this->sortDirection);
+
         if ($request->searchBy) {
             $search = $namespacedModel::where(function ($query) use ($request) {
                 foreach ($request->searchBy as $searchKey => $searchValue) {
-                    $query->orWhere($searchKey, 'LIKE', '%' . $searchValue . '%');
+                    $query->where($searchKey, 'LIKE', '%' . $searchValue . '%');
                 }
-            });
-
-            return $search->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
+            })->orderBy($this->sortBy, $this->sortDirection);
         }
 
-        return $namespacedModel::orderBy($this->sortBy, $this->sortDirection)->paginate(10);
+        return $search->paginate(10);
     }
 }
