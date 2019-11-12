@@ -18,8 +18,11 @@ class TodoService
 
     public function all($request)
     {
-        if ($request->sortBy && $request->sortDirection) {
+        if ($request->sortBy) {
             $this->sortBy = $request->sortBy;
+        }
+
+        if ($request->sortDirection) {
             $this->sortDirection = $request->sortDirection;
         }
 
