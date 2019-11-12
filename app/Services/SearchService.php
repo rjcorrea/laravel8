@@ -18,21 +18,24 @@ class SearchService
     {
         $namespacedModel = '\\App\\' . $model;
 
-        if($request->searchBy){
-            $search = $namespacedModel::orWhere(function($query) use ($request) {
-                foreach ($request->searchBy as $searchKey => $searchValue) {
-                    $query->orWhere($searchKey, 'LIKE', '%'.$searchValue.'%');
-                }
-            });
+        if ($request->sortBy) {
+            $this->sortBy = $request->sortBy;
         }
 
-        if ($request->sortBy && $request->sortDirection) {
-            $this->sortBy = $request->sortBy;
+        if ($request->sortDirection) {
             $this->sortDirection = $request->sortDirection;
         }
 
-        $search->orderBy($this->sortBy, $this->sortDirection);
+        if ($request->searchBy) {
+            $search = $namespacedModel::where(function ($query) use ($request) {
+                foreach ($request->searchBy as $searchKey => $searchValue) {
+                    $query->orWhere($searchKey, 'LIKE', '%' . $searchValue . '%');
+                }
+            });
 
-        return $search->paginate(10);
+            return $search->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
+        }
+
+        return $namespacedModel::orderBy($this->sortBy, $this->sortDirection)->paginate(10);
     }
 }
