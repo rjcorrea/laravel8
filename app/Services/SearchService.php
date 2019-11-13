@@ -5,8 +5,8 @@ namespace App\Services;
 class SearchService
 {
 
-    public $sortBy = 'id';
-    public $sortDirection = 'desc';
+    private $sortBy = 'id';
+    private $sortDirection = 'desc';
 
     public function search($model)
     {

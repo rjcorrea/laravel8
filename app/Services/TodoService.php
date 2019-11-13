@@ -7,23 +7,17 @@ use App\Todo;
 class TodoService
 {
 
-    public $sortBy;
-    public $sortDirection;
+    private $sortBy = 'id';
+    private $sortDirection = 'desc';
 
-    public function __construct()
+    public function all()
     {
-        $this->sortBy = 'id';
-        $this->sortDirection = 'desc';
-    }
-
-    public function all($request)
-    {
-        if ($request->sortBy) {
-            $this->sortBy = $request->sortBy;
+        if (request()->has('sortBy')) {
+            $this->sortBy = request()->sortBy;
         }
 
-        if ($request->sortDirection) {
-            $this->sortDirection = $request->sortDirection;
+        if (request()->has('sortDirection')) {
+            $this->sortDirection = request()->sortDirection;
         }
 
         $todos = Todo::orderBy($this->sortBy, $this->sortDirection);
