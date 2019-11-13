@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\SearchService;
 
@@ -15,8 +14,8 @@ class SearchController extends Controller
         $this->searchService = $service;
     }
 
-    public function search(Request $request, $model)
+    public function search($model)
     {
-        return $this->searchService->search($request, $model);
+        return $this->searchService->search($model);
     }
 }
