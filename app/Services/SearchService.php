@@ -5,14 +5,8 @@ namespace App\Services;
 class SearchService
 {
 
-    public $sortBy;
-    public $sortDirection;
-
-    public function __construct()
-    {
-        $this->sortBy = 'id';
-        $this->sortDirection = 'desc';
-    }
+    public $sortBy = 'id';
+    public $sortDirection = 'desc';
 
     public function search($request, $model)
     {
