@@ -27,7 +27,6 @@ class SearchService
                 foreach (request()->searchBy as $searchKey => $searchValue) {
                     $query->where($searchKey, 'LIKE', '%' . $searchValue . '%');
                 }
-
             })->orderBy($this->sortBy, $this->sortDirection);
         }
 
