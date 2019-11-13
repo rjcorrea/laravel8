@@ -12,11 +12,11 @@ class SearchService
     {
         $namespacedModel = '\\App\\' . $model;
 
-        if ($request->sortBy) {
+        if ($request->has('sortBy')) {
             $this->sortBy = $request->sortBy;
         }
 
-        if ($request->sortDirection) {
+        if ($request->has('sortDirection')) {
             $this->sortDirection = $request->sortDirection;
         }
 
